@@ -1,5 +1,6 @@
 
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -23,14 +24,18 @@ public class EchoClient {
         System.out.printf("Write 'bye' to get out!%n%n%n");
         Socket socket = new Socket(host, port);
         Scanner scanner = new Scanner(System.in, "UTF-8");
+        InputStreamReader isr = new InputStreamReader(socket.getInputStream());
 
-        try (PrintWriter writer = new PrintWriter(socket.getOutputStream())) {
+        try (PrintWriter writer = new PrintWriter(socket.getOutputStream());
+             Scanner sc = new Scanner(isr)) {
             while (true) {
                 String message1 = scanner.nextLine();
                 writer.write(message1);
                 writer.write(System.lineSeparator());
-
                 writer.flush();
+                String message = sc.nextLine().strip();
+                System.out.println(message);
+
                 if ("bye".equalsIgnoreCase(message1)) {
                         return;
                     }
